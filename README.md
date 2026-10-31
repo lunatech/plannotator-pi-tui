@@ -12,40 +12,48 @@ Pi Markdown Annotator lets you review and annotate Markdown in a terminal. Pi re
 - The `plannotator-tui` binary. Install it with Homebrew on macOS or Linux, or build it from the included submodule (steps below).
 - An interactive terminal for running reviews.
 
-### Install from a checkout
+### Install from GitHub
 
-Clone the repository and initialize its submodules, then build the reviewer binary:
+Install the extension as a Pi package from the repository's default branch (`main`):
 
 ```sh
-git clone --recurse-submodules <repository-url>
-cd interactive-annotator
-cargo build --manifest-path research/plannotator-tui/Cargo.toml -p plannotator-tui
+pi install git:github.com/lunatech/plannotator-pi-tui
 ```
 
-If you already cloned without submodules, run `git submodule update --init --recursive` before building.
+To select `main` explicitly, use `pi install git:github.com/lunatech/plannotator-pi-tui@main`. The branch suffix is optional while `main` is the default. For a fixed version, use a commit SHA or tag instead; Pi keeps that ref pinned when packages are updated. Run `pi list` to confirm the package is configured.
 
-Alternatively, install the reviewer binary with Homebrew on macOS or Linux:
+Pi installs the extension, **not** the `plannotator-tui` executable. Install the reviewer separately with Homebrew on macOS or Linux:
 
 ```sh
 brew tap plannotator/tap
 brew install plannotator/tap/plannotator-tui
 ```
 
-Register this checkout as a Pi package:
+If the executable is not on `PATH`, set `PLANNOTATOR_TUI_BIN` to its absolute path before starting Pi.
+
+### Update or uninstall
+
+For an installation from the GitHub repo, update or remove the Pi package with:
 
 ```sh
+pi update git:github.com/lunatech/plannotator-pi-tui
+pi remove git:github.com/lunatech/plannotator-pi-tui
+```
+
+A tag or commit SHA stays pinned when you update; install a different ref to move to another version. If you installed from a checkout with `pi install .`, update the checkout with Git yourself; remove that package with `pi remove .` from the same directory. Removing the Pi package does not uninstall the separately installed `plannotator-tui` binary.
+
+### Install from a checkout
+
+To build the reviewer from the pinned submodule instead, clone the repository with its submodules:
+
+```sh
+git clone --recurse-submodules https://github.com/lunatech/plannotator-pi-tui.git
+cd plannotator-pi-tui
+cargo build --manifest-path research/plannotator-tui/Cargo.toml -p plannotator-tui
 pi install .
 ```
 
-The build places the binary at `research/plannotator-tui/target/debug/plannotator-tui`. Add that location to `PATH`, or set `PLANNOTATOR_TUI_BIN` to its full path so the extension can find it.
-
-To load the extension for one session without installing it as a package:
-
-```sh
-pi --extension ./src/markdown-annotator.ts
-```
-
-When the binary is already on `PATH`, no additional configuration is needed.
+If you already cloned without submodules, run `git submodule update --init --recursive` before building. The build places the binary at `research/plannotator-tui/target/debug/plannotator-tui`. Add it to `PATH`, or set `PLANNOTATOR_TUI_BIN` to its absolute path. For one session without installing the extension, run `pi --extension ./src/markdown-annotator.ts` from the checkout.
 
 ## Development
 
