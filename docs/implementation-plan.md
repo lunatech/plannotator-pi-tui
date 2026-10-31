@@ -1,6 +1,6 @@
 # Pi Markdown Annotator implementation plan
 
-Status: implementation plan; no extension code exists yet.
+Status: initial implementation exists under `src/`; this document remains the design and verification checklist. Core unit tests and syntax checks pass. To reproduce those checks from the repository root, run `npm test` and `npm run check` (the latter runs Node's syntax check over the listed source files). These checks do not perform TypeScript type-checking. Interactive Pi/TUI handoff, cancellation, follow-up ordering, and a true TypeScript type-check remain to be verified.
 
 ## Goal and agreed approach
 
@@ -70,7 +70,7 @@ Register the tool with sequential execution so a write/edit plus review in one a
 
 ## Component boundaries
 
-Proposed files, not existing implementation:
+Current source layout:
 
 ```text
 src/markdown-annotator.ts       extension entry point: command, tool, lifecycle hooks

@@ -1,0 +1,17 @@
+{
+  "name": "pi-markdown-annotator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pi extension for interactive terminal review of Markdown files",
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.79.1"
+  },
+  "pi": {
+    "extensions": ["./src/markdown-annotator.ts"]
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "check": "node --experimental-strip-types --check src/markdown-annotator.ts && node --experimental-strip-types --check src/markdown-args.ts && node --experimental-strip-types --check src/markdown-target.ts && node --experimental-strip-types --check src/tui-protocol.ts && node --experimental-strip-types --check src/terminal-runner.ts && node --experimental-strip-types --check src/markdown-feedback.ts && node --experimental-strip-types --check src/markdown-review.ts"
+  }
+}
