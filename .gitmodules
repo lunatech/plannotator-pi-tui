@@ -1,0 +1,9 @@
+[submodule "research/plannotator"]
+	path = research/plannotator
+	url = https://github.com/backnotprop/plannotator.git
+[submodule "research/plannotator-tui"]
+	path = research/plannotator-tui
+	url = https://github.com/plannotator/plannotator-tui.git
+[submodule "research/pi"]
+	path = research/pi
+	url = git@github.com:earendil-works/pi.git

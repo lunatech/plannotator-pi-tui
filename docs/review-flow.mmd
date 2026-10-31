@@ -1,0 +1,15 @@
+flowchart TD
+    Trigger["annotate-markdown command or annotate_markdown tool"] --> Validate["Validate Markdown file, session, terminal, and binary"]
+    Validate --> Ready{"Ready?"}
+    Ready -->|No| Error["Report error without launching"]
+    Ready -->|Yes| Lock["Acquire review lock and create private result directory"]
+    Lock --> Handoff["Pause Pi rendering and launch TUI"]
+    Handoff --> Restore["Child exits; restore Pi in finally"]
+    Restore --> Check["Validate exit status, result JSON, session, and file hash"]
+    Check --> Decision{"Outcome"}
+    Decision -->|Send| Feedback["Deliver feedback to originating Pi session"]
+    Feedback --> Revise["Pi revises the same Markdown file"]
+    Revise --> Trigger
+    Decision -->|Approve| Done["Record approval; end review cycle"]
+    Decision -->|Dismiss| Quiet["Return without starting a turn"]
+    Decision -->|Invalid or stale| Recover["Report failure; require a fresh review"]
