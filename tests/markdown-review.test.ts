@@ -63,6 +63,27 @@ test('review sends annotated feedback to the originating session and restores te
   assert.deepEqual(counts(), { stopped: 1, started: 1 });
 });
 
+test('review drops feedback when the session changes during result processing', async (t) => {
+  const root = await mkdtemp(join(tmpdir(), 'markdown-owner-test-'));
+  t.after(async () => { await stopRuntime(); await rm(root, { recursive: true, force: true }); });
+  await writeFile(join(root, 'plan.md'), '# Plan\n');
+  const reviewer = await fakeReviewer(root, JSON.stringify({ decision: 'annotated', feedback: 'Revise' }));
+  const previous = process.env.PLANNOTATOR_TUI_BIN;
+  process.env.PLANNOTATOR_TUI_BIN = reviewer;
+  t.after(() => { if (previous === undefined) delete process.env.PLANNOTATOR_TUI_BIN; else process.env.PLANNOTATOR_TUI_BIN = previous; });
+  const { ctx } = fakeContext(root);
+  let checks = 0;
+  ctx.sessionManager.getSessionId = () => ++checks < 3 ? 'test-session' : 'new-session';
+  const pi = {
+    sendUserMessage: () => assert.fail('feedback must not reach the new session'),
+    sendMessage: () => assert.fail('outcome must not reach the new session'),
+    appendEntry: () => assert.fail('do not record outcome in the new session'),
+  };
+  startRuntime();
+  await assert.rejects(reviewMarkdownFile(pi, 'plan.md', ctx, { source: 'tool' }), /session changed/);
+  assert.equal(checks, 3);
+});
+
 test('review refuses decisions after the file changes', async (t) => {
   const root = await mkdtemp(join(tmpdir(), 'markdown-stale-test-'));
   t.after(async () => { await stopRuntime(); await rm(root, { recursive: true, force: true }); });

@@ -118,6 +118,10 @@ export async function reviewMarkdownFile(
       throw new Error('The reviewer did not write a decision result.');
     }
     const decision = parseTuiDecision(json);
+    // File and result reads yield to the event loop; the session or request may
+    // change while they are in flight. Do not write metadata or deliver to it.
+    if (controller.signal.aborted) throw new Error('Markdown review was cancelled.');
+    if (!ownerIsCurrent(owner, ctx)) throw new Error('Pi session changed during review; the decision was not delivered.');
     const reviewId = recordOutcome(pi, owner, target.path, target.sha256, decision);
     if (decision.decision === 'annotated' && decision.feedback.trim()) {
       pi.sendUserMessage(revisionMessage(reviewId, target.path, target.sha256, decision.feedback), { deliverAs: 'followUp' });

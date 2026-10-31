@@ -17,13 +17,13 @@ When implementation choices are needed, inspect the pinned `research/` source an
 - [x] Implement Markdown path parsing for `/annotate-markdown <path>`, including quoted paths, clear usage errors, project-boundary/symlink checks, Markdown extension restrictions, and UTF-8 validation.
 - [x] Handle Pi-style `@path` references in command/tool file arguments; literal `@`-prefixed filenames use `./@name.md`.
 - [x] Implement `annotate_markdown({ filePath })` with an explicit-path tool contract and sequential execution so prior file writes complete before review.
-- [x] Implement a TUI child-process adapter using inherited terminal streams and Pi's established terminal-handoff techniques; basic tests confirm restoration on success, nonzero exit, and launch error. Cancellation/shutdown still need integration verification.
+- [x] Implement a TUI child-process adapter using inherited terminal streams and Pi's established terminal-handoff techniques; tests confirm restoration on success, nonzero exit, launch error, and cancellation of a child that ignores SIGTERM. Interactive shutdown still needs manual verification.
 - [x] Implement the strict `--gate --json --result-file` protocol: private temporary result location, exit-status checks, schema/size validation, and cleanup.
-- [x] Implement initial review lock, file-change detection, and runtime/session ownership checks. Add targeted race/cancellation tests during follow-up.
+- [x] Implement review lock, file-change detection, and runtime/session ownership checks; recheck immediately before recording/delivery. Tests cover session changes during result processing and an overlapping command that must not cancel the active review.
 - [x] Map annotated feedback to one Pi follow-up requesting revision of the same file and resubmission; map approval and dismissal without triggering inappropriate revision turns.
 - [x] Persist minimal review outcome metadata with `appendEntry()`; unresolved reviews are not replayed.
 - [x] Add unit tests for argument parsing, path/target validation, protocol outcomes, terminal restoration, and feedback formatting.
-- [ ] Add end-to-end fake TUI tests for result-file handoff, malformed/missing result integration, cancellation, and review-controller outcomes. The process adapter has unit tests for success/failure/launch errors and terminal restoration.
+- [ ] Add remaining end-to-end fake TUI tests for malformed/missing result integration and all review-controller outcomes. Result-file handoff, cancellation escalation, overlapping commands, stale files, and session-change rejection have tests.
 - [x] Build and test against the pinned TUI source; `cargo test` passed all tests. Built binary reports v0.9.9. A real interactive gate still needs manual terminal verification.
 - [ ] Run formatting, TypeScript type-check, lint, and tests. `npm test`, `npm run check` (Node syntax checks), `git diff --check`, Pi RPC extension startup, and TUI Cargo tests pass. TypeScript compiler/linter are unavailable and npm installation was refused because it modifies `node_modules`; configure a non-mutating type-check path or obtain approval to install tooling.
 - [x] Update README and implementation docs with the current entry point, binary setup, supported Markdown formats, current state, and outstanding runtime verification.

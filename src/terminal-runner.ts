@@ -4,15 +4,20 @@ import type { ExtensionCommandContext, ExtensionContext } from '@earendil-works/
 export interface ChildOutcome { code: number; signal: NodeJS.Signals | null }
 
 let activeChild: ReturnType<typeof spawn> | undefined;
+const terminating = new WeakSet<ReturnType<typeof spawn>>();
 
-export function terminateActiveChild(): void {
-  if (!activeChild || activeChild.killed) return;
-  activeChild.kill('SIGTERM');
-  const child = activeChild;
+function terminateChild(child: ReturnType<typeof spawn>): void {
+  if (terminating.has(child) || child.exitCode !== null || child.signalCode !== null) return;
+  terminating.add(child);
+  child.kill('SIGTERM');
   const timer = setTimeout(() => {
     if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
   }, 1500);
   timer.unref();
+}
+
+export function terminateActiveChild(): void {
+  if (activeChild) terminateChild(activeChild);
 }
 
 export async function runInteractiveTui(
@@ -55,7 +60,7 @@ export async function runInteractiveTui(
         else finish({ code, signal: childSignal });
       });
       abortHandler = () => {
-        child?.kill('SIGTERM');
+        if (child) terminateChild(child);
       };
       signal?.addEventListener('abort', abortHandler, { once: true });
       if (signal?.aborted) abortHandler();

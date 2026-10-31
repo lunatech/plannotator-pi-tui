@@ -2,7 +2,6 @@ import type { ExtensionAPI } from '@earendil-works/pi-coding-agent';
 import { parseMarkdownArgs } from './markdown-args.ts';
 import { outcomeText } from './markdown-feedback.ts';
 import { reviewMarkdownFile, startRuntime, stopRuntime } from './markdown-review.ts';
-import { terminateActiveChild } from './terminal-runner.ts';
 
 export default function markdownAnnotator(pi: ExtensionAPI): void {
   pi.on('session_start', () => startRuntime());
@@ -18,7 +17,6 @@ export default function markdownAnnotator(pi: ExtensionAPI): void {
         const result = await reviewMarkdownFile(pi, filePath, ctx, { source: 'command' });
         ctx.ui.notify(outcomeText(result), 'info');
       } catch (error) {
-        terminateActiveChild();
         ctx.ui.notify(error instanceof Error ? error.message : String(error), 'error');
       }
     },
