@@ -1,16 +1,28 @@
 # Pi Markdown Annotator
 
-## What we’re building
+## Introduction
 
-Plannotator-style interactive annotation in a terminal, with the TUI’s feedback automatically returned to Pi so Pi can revise the Markdown file and repeat the cycle—ideally usable on a headless server.
+Pi Markdown Annotator lets you review and annotate Markdown in a terminal. Pi receives your feedback and can revise the file and repeat the review. The extension provides an `/annotate-markdown <path>` command and an `annotate_markdown({ filePath })` agent tool. It supports `.md`, `.markdown`, and `.mdx` files. Other formats are unsupported because the TUI has no plain-text or source-code mode.
 
-This is a Pi extension named **Pi Markdown Annotator**, with an `/annotate-markdown <path>` command and an `annotate_markdown({ filePath })` agent tool. It supports Markdown files only (`.md`, `.markdown`, `.mdx`), rendered as Markdown without executing MDX components. Other text formats and binary files are unsupported because the underlying TUI has no faithful plain-text/source-code mode.
+## Installation
 
-## Implementation plan
+From the repository root, install this checkout as a Pi package for future sessions:
 
-See [`docs/implementation-plan.md`](docs/implementation-plan.md) for the extension design, review flow, CLI result protocol, Pi hooks, pseudocode, implementation stages, and acceptance tests.
+```sh
+pi install .
+```
+
+To load the extension for one session without installing it:
+
+```sh
+pi --extension ./src/markdown-annotator.ts
+```
+
+The extension also requires the `plannotator-tui` binary. Install or build that binary separately and set `PLANNOTATOR_TUI_BIN` to its executable path if it is not on `PATH`.
 
 ## Development
+
+See [`docs/implementation-plan.md`](docs/implementation-plan.md) for the extension design, review flow, CLI result protocol, Pi hooks, pseudocode, implementation stages, and acceptance tests.
 
 The extension entry point is `./src/markdown-annotator.ts`. Install the `plannotator-tui` binary separately; the extension invokes it with `--gate --json --result-file`. You can set `PLANNOTATOR_TUI_BIN` to its executable path.
 
@@ -35,7 +47,7 @@ Run basic checks with `npm test` and `npm run check`. These are development laun
 
 ## Research
 
-This repository contains three Git submodules under [`research/`](research/):
+These submodules informed the extension's design: Plannotator supplied the agent-review reference, `plannotator-tui` provides the terminal Markdown review UI and Pi session-reply support, and Pi's source was used to check extension integration points. This repository contains three Git submodules under [`research/`](research/):
 
 - [`plannotator`](research/plannotator) — browser-based plan and code review for coding agents. Its Pi extension is at [`research/plannotator/apps/pi-extension`](research/plannotator/apps/pi-extension).
 - [`plannotator-tui`](research/plannotator-tui) — terminal UI for reviewing and annotating Markdown documents, including support for reading Pi session replies.
