@@ -6,19 +6,46 @@ Pi Markdown Annotator lets you review and annotate Markdown in a terminal. Pi re
 
 ## Installation
 
-From the repository root, install this checkout as a Pi package for future sessions:
+### Prerequisites
+
+- [Pi](https://github.com/badlogic/pi-mono) installed and available as `pi` on your `PATH`.
+- The `plannotator-tui` binary. Install it with Homebrew on macOS or Linux, or build it from the included submodule (steps below).
+- An interactive terminal for running reviews.
+
+### Install from a checkout
+
+Clone the repository and initialize its submodules, then build the reviewer binary:
+
+```sh
+git clone --recurse-submodules <repository-url>
+cd interactive-annotator
+cargo build --manifest-path research/plannotator-tui/Cargo.toml -p plannotator-tui
+```
+
+If you already cloned without submodules, run `git submodule update --init --recursive` before building.
+
+Alternatively, install the reviewer binary with Homebrew on macOS or Linux:
+
+```sh
+brew tap plannotator/tap
+brew install plannotator/tap/plannotator-tui
+```
+
+Register this checkout as a Pi package:
 
 ```sh
 pi install .
 ```
 
-To load the extension for one session without installing it:
+The build places the binary at `research/plannotator-tui/target/debug/plannotator-tui`. Add that location to `PATH`, or set `PLANNOTATOR_TUI_BIN` to its full path so the extension can find it.
+
+To load the extension for one session without installing it as a package:
 
 ```sh
 pi --extension ./src/markdown-annotator.ts
 ```
 
-The extension also requires the `plannotator-tui` binary. Install or build that binary separately and set `PLANNOTATOR_TUI_BIN` to its executable path if it is not on `PATH`.
+When the binary is already on `PATH`, no additional configuration is needed.
 
 ## Development
 
