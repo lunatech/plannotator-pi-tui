@@ -54,7 +54,7 @@ The APIs exist in these sources. Terminal behavior and follow-up ordering still 
 /annotate-markdown "docs/design plan.md"
 ```
 
-Pi supplies the trailing text to `registerCommand("annotate-markdown").handler(args, ctx)`. Parse exactly one path, with optional matching single or double quotes. Preserve spaces inside quoted paths. Reject missing paths, unmatched quotes, and extra unquoted arguments with usage information. Do not evaluate shell syntax, expand environment variables, or execute substitutions.
+Pi supplies the trailing text to `registerCommand("annotate-markdown").handler(args, ctx)`. Parse exactly one path, with optional matching single or double quotes. Preserve spaces inside quoted paths. Reject missing paths, unmatched quotes, and extra unquoted arguments with usage information. Expand only a leading `~` or `~/` to the current user's home directory; do not expand environment variables or execute shell syntax/substitutions.
 
 Resolve relative paths against `ctx.cwd`; accept absolute paths only within the current project root (`ctx.cwd` for the first version). Resolve symlinks before enforcing that boundary. Reject non-files, unsupported extensions, inaccessible files, and paths escaping the project. This restriction is our policy, not an upstream TUI requirement.
 

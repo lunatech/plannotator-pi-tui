@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile, realpath } from 'node:fs/promises';
-import { isAbsolute, relative, resolve } from 'node:path';
+import { homedir } from 'node:os';
+import { isAbsolute, join, relative, resolve } from 'node:path';
 
 const MARKDOWN_EXTENSIONS = new Set(['.md', '.markdown', '.mdx']);
 
@@ -16,8 +17,14 @@ export function normalizeMarkdownReference(filePath: string): string {
   return filePath.startsWith('@') ? filePath.slice(1) : filePath;
 }
 
+export function expandHomeDirectory(filePath: string, home = homedir()): string {
+  if (filePath === '~') return home;
+  if (filePath.startsWith('~/')) return join(home, filePath.slice(2));
+  return filePath;
+}
+
 export async function validateMarkdownTarget(filePath: string, cwd: string): Promise<MarkdownTarget> {
-  filePath = normalizeMarkdownReference(filePath);
+  filePath = expandHomeDirectory(normalizeMarkdownReference(filePath));
   if (!filePath) throw new Error('A Markdown file path is required after @.');
   const requested = isAbsolute(filePath) ? filePath : resolve(cwd, filePath);
   let realPath: string;

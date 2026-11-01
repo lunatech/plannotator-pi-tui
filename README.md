@@ -28,7 +28,7 @@ cd /path/to/project
 pi
 ```
 
-Run `/annotate-markdown docs/plan.md` inside Pi. Pi-style references such as `/annotate-markdown @docs/plan.md` work too. You can also ask the agent to review a file with `annotate_markdown({ filePath: "docs/plan.md" })` after it finishes writing the file.
+Run `/annotate-markdown docs/plan.md` inside Pi. Paths beginning with `~/` expand to your home directory, and Pi-style references such as `/annotate-markdown @docs/plan.md` work too. Reviews are restricted to files inside the project directory where Pi was started. You can also ask the agent to review a file with `annotate_markdown({ filePath: "docs/plan.md" })` after it finishes writing the file.
 
 In the reviewer, select text with the mouse or press `v`, move to a range, and press `Enter`. Press `c` to add a comment. Press `E` to send annotations and request a revision, `A` to approve (including non-blocking notes), or `q` to dismiss. After a revision, Pi can submit the same file for another review. Reviewing a plan does not authorize Pi to carry out the plan.
 

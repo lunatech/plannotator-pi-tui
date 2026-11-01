@@ -3,9 +3,16 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { isTargetUnchanged, validateMarkdownTarget } from '../src/markdown-target.ts';
+import { expandHomeDirectory, isTargetUnchanged, validateMarkdownTarget } from '../src/markdown-target.ts';
 
 let root: string;
+test('expands only a leading home-directory shorthand', () => {
+  assert.equal(expandHomeDirectory('~', '/home/tester'), '/home/tester');
+  assert.equal(expandHomeDirectory('~/docs/plan.md', '/home/tester'), '/home/tester/docs/plan.md');
+  assert.equal(expandHomeDirectory('~other/docs/plan.md', '/home/tester'), '~other/docs/plan.md');
+  assert.equal(expandHomeDirectory('docs/~/plan.md', '/home/tester'), 'docs/~/plan.md');
+});
+
 test('Markdown target validation', async (t) => {
   root = await mkdtemp(join(tmpdir(), 'markdown-target-test-'));
   t.after(async () => rm(root, { recursive: true, force: true }));
